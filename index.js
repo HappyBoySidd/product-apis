@@ -66,7 +66,7 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  logger.info('User Microservice Started and Listening on ' + bind);
+  logger.info('Product Microservice Started and Listening on ' + bind);
 }
 
 
