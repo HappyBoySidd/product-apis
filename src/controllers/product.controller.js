@@ -193,5 +193,6 @@ export default {
   updateProduct,
   getAllProducts,
   getProduct,
-  deleteProduct,
+  deleteProduct,  
+  getProductssByIds
 };
