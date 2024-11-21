@@ -147,6 +147,23 @@ const getProduct = async (req, res) => {
   }
 };
 
+const getProductssByIds = async (req, res) => {
+  const productIds = req.params["productIds"];
+  try {
+    const products = await Products.find({ _id: { $in: productIds } });
+    if(products) {    
+      res.send(products);
+    }
+    else {
+      errorHandler(res, { message: "Products not found!" }, 400);
+      return;
+    }
+  }
+  catch {
+    errorHandler(res, err, 500);
+  }
+}
+
 const deleteProduct = async (req, res) => {
   const productId = req.params["productId"];
 
