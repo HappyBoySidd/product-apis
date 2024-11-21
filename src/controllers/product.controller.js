@@ -6,8 +6,6 @@ import { errorHandler } from "../utils/index.js";
 import { getProducts, getProductById, isProductPresent } from "../helpers/product.js";
 
 const addproduct = async (req, res) => {
-  const productId = req.params["productId"];
-
   const title = req.body.title;
   const description = req.body.description;
   const name = req.body.name;
@@ -23,11 +21,11 @@ const addproduct = async (req, res) => {
   }
 
   try {
-    const productPresent = await isProductPresent(productId);
+    const productPresent = Products.find({ title })
 
     if (!productPresent) {
       const newRecord = new Products({
-        productId,
+        _id: new mongoose.Types.ObjectId(),
         title: title,
         description: description,
         name: name,
@@ -129,21 +127,24 @@ const getProduct = async (req, res) => {
     return;
   }
 
-  Products.find({ _id: productId })
-    .select("name category")
-    .exec()
-    .then(
-      (docs) => {
-        if (!docs?.length) {
-          errorHandler(res, { message: "Product not found!" }, 400);
-        } else {
-          res.send(docs[0]);
-        }
-      },
-      (err) => {
-        errorHandler(res, err);
-      }
-    );
+  try {
+    const productPresent = await isProductPresent(productId);
+  
+    if (!productPresent) {
+      errorHandler(res, { message: "Product not found!"+ productId }, 400);
+      return;
+    }
+    const productRecord = await getProductById(productId);
+
+    if (productRecord) {
+      res.send(productRecord);
+    } else {
+      errorHandler(res, { message: "Product not found!" }, 400);
+      return;
+    }
+  } catch (err) {
+    errorHandler(res, err, 500);
+  }
 };
 
 const deleteProduct = async (req, res) => {
