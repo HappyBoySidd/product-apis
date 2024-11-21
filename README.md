@@ -1,6 +1,6 @@
 # Product Microservices
 
-This express app contains all the APIs of User microservices of an e-comming appliaction.
+This express app contains all the APIs of Product microservices of an e-comming appliaction.
 
 ## Setup/Run App
 
