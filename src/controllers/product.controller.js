@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 
-import Products from "../models/product.js";``
+import Products from "../models/product.js";
 import { errorHandler } from "../utils/index.js";
 import { getProducts, getProductById, isProductPresent } from "../helpers/product.js";
 
@@ -149,20 +149,33 @@ const getProduct = async (req, res) => {
 
 const getProductsByIds = async (req, res) => {
   const productIds = req.params["productIds"];
+  
   try {
-    const products = await Products.find({ _id: { $in: productIds } });
-    if(products) {    
-      res.send(products);
+    const lstProductId = productIds.split(',');
+    const lstProducts = await getProductDetails(lstProductId);    
+
+    if(lstProducts.length > 0) {    
+      res.send(lstProducts);
     }
     else {
       errorHandler(res, { message: "Products not found!" }, 400);
       return;
     }
   }
-  catch {
+  catch (err){
     errorHandler(res, err, 500);
   }
 }
+
+const getProductDetails = async (lstProductId) => {
+  let lstProductDetails = [];
+  for(const productId of lstProductId) {
+    var productDetails = await getProductById(productId);
+    lstProductDetails = lstProductDetails.concat(productDetails);
+  }
+
+  return lstProductDetails;
+};
 
 const deleteProduct = async (req, res) => {
   const productId = req.params["productId"];
