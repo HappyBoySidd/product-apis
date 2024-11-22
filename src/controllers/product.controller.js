@@ -131,7 +131,7 @@ const getProduct = async (req, res) => {
     const productPresent = await isProductPresent(productId);
   
     if (!productPresent) {
-      errorHandler(res, { message: "Product not found!"+ productId }, 400);
+      errorHandler(res, { message: "Product not found!" }, 400);
       return;
     }
     const productRecord = await getProductById(productId);
@@ -147,7 +147,7 @@ const getProduct = async (req, res) => {
   }
 };
 
-const getProductssByIds = async (req, res) => {
+const getProductsByIds = async (req, res) => {
   const productIds = req.params["productIds"];
   try {
     const products = await Products.find({ _id: { $in: productIds } });
@@ -193,6 +193,6 @@ export default {
   updateProduct,
   getAllProducts,
   getProduct,
-  deleteProduct,  
-  getProductssByIds
+  deleteProduct,
+  getProductsByIds
 };
