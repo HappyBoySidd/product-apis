@@ -10,56 +10,32 @@ const addproduct = async (req, res) => {
   const description = req.body.description;
   const name = req.body.name;
   const price = req.body.price;
-  const imageUrl = req.body.imageUrl;
+  const imageURL = req.body.imageURL;
   const thumbNailURL = req.body.thumbNailURL;
   const category = req.body.category;
   const variants = req.body.variants;
 
-  if (!productId || !title || !description || !price || !category || !name) {
+  if (!title || !description || !price || !category || !name) {
     errorHandler(res, { message: "Bad Request - Payload not matching" }, 400);
     return;
   }
 
   try {
-    const productPresent = Products.find({ title })
+    const newRecord = new Products({
+      _id: new mongoose.Types.ObjectId(),
+      title: title,
+      description: description,
+      name: name,
+      price: price,
+      imageURL: imageURL,
+      thumbNailURL: thumbNailURL,
+      category: category,
+      variants: variants,
+    });
 
-    if (!productPresent) {
-      const newRecord = new Products({
-        _id: new mongoose.Types.ObjectId(),
-        title: title,
-        description: description,
-        name: name,
-        price: price,
-        imageUrl: imageUrl,
-        thumbNailURL: thumbNailURL,
-        category: category,
-        variants: variants,
-      });
+    await newRecord.save();
 
-      await newRecord.save();
-
-      res.send(newRecord);
-    }
-    else {
-      const updatedRecord = await Products.findOneAndUpdate(
-        { productId },
-        {
-          title: title,
-          description: description,
-          name: name,
-          price: price,
-          imageUrl: imageUrl,
-          thumbNailURL: thumbNailURL,
-          category: category,
-          variants: variants,
-        },
-        {
-          new: true,
-        }
-      );
-
-      res.send(updatedRecord);
-    }
+    res.send(newRecord);
   } catch (err) {
     errorHandler(res, err, 500);
   }
